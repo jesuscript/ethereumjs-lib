@@ -1,4 +1,4 @@
-var vmBitwiseLogicOperationTest = require('ethereum-tests').vmtests.vmBitwiseLogicOperationTest,
+var vmPushDupSwapTest = require('ethereum-tests').VMTests.vmPushDupSwapTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
@@ -6,11 +6,19 @@ var vmBitwiseLogicOperationTest = require('ethereum-tests').vmtests.vmBitwiseLog
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe('[Common]: vmBitwiseLogicOperationTest', function () {
-  var tests = Object.keys(vmBitwiseLogicOperationTest);
+describe('[Common]: vmPushDupSwapTest', function () {
+  // var dup2error = vmPushDupSwapTest.dup2error;
+  // var push32error = vmPushDupSwapTest.push32error;
+  // var swap2error = vmPushDupSwapTest.swap2error;
+
+  delete vmPushDupSwapTest.dup2error;
+  delete vmPushDupSwapTest.push32error;
+  delete vmPushDupSwapTest.swap2error;
+
+  var tests = Object.keys(vmPushDupSwapTest);
   tests.forEach(function(testKey) {
     var state = new Trie();
-    var testData = vmBitwiseLogicOperationTest[testKey];
+    var testData = vmPushDupSwapTest[testKey];
 
     it(testKey + ' setup the pre', function (done) {
       testUtils.setupPreConditions(state, testData, done);
@@ -33,7 +41,7 @@ describe('[Common]: vmBitwiseLogicOperationTest', function () {
       vm.runCode(runCodeData, function(err, results) {
         assert(!err, 'err: ' + err);
         assert.strictEqual(results.gasUsed.toNumber(),
-          testData.exec.gas - testData.gas);
+          testData.exec.gas - testData.gas, 'gas used mismatch');
 
         async.series([
           function(cb) {
@@ -60,4 +68,6 @@ describe('[Common]: vmBitwiseLogicOperationTest', function () {
       });
     });
   });
+
+  it('TODO: error tests');
 });

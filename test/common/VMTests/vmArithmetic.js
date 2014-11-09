@@ -1,4 +1,4 @@
-var vmPushDupSwapTest = require('ethereum-tests').vmtests.vmPushDupSwapTest,
+var vmArithmeticTest = require('ethereum-tests').VMTests.vmArithmeticTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
@@ -6,19 +6,11 @@ var vmPushDupSwapTest = require('ethereum-tests').vmtests.vmPushDupSwapTest,
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe('[Common]: vmPushDupSwapTest', function () {
-  // var dup2error = vmPushDupSwapTest.dup2error;
-  // var push32error = vmPushDupSwapTest.push32error;
-  // var swap2error = vmPushDupSwapTest.swap2error;
-
-  delete vmPushDupSwapTest.dup2error;
-  delete vmPushDupSwapTest.push32error;
-  delete vmPushDupSwapTest.swap2error;
-
-  var tests = Object.keys(vmPushDupSwapTest);
+describe('[Common]: vmArithmeticTest', function () {
+  var tests = Object.keys(vmArithmeticTest);
   tests.forEach(function(testKey) {
     var state = new Trie();
-    var testData = vmPushDupSwapTest[testKey];
+    var testData = vmArithmeticTest[testKey];
 
     it(testKey + ' setup the pre', function (done) {
       testUtils.setupPreConditions(state, testData, done);
@@ -68,6 +60,4 @@ describe('[Common]: vmPushDupSwapTest', function () {
       });
     });
   });
-
-  it('TODO: error tests');
 });

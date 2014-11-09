@@ -1,42 +1,16 @@
-var vmIOandFlowOperationsTest = require('ethereum-tests').vmtests.vmIOandFlowOperationsTest,
+var vmBitwiseLogicOperationTest = require('ethereum-tests').VMTests.vmBitwiseLogicOperationTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
-  ERROR = require('../../../lib/vm/constants').ERROR,
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-
-function expectError(testKey, error) {
-  if (testKey.match(
-    /(^dupAt51doesNotExistAnymore$|^swapAt52doesNotExistAnymore$)/)) {
-    assert.strictEqual(error, ERROR.INVALID_OPCODE);
-    return true;
-  } else if (testKey.match(
-    /(^jump0$|^jump0_jumpdest1$|^jumpi0$|^jumpi2$)/)) {
-    assert.strictEqual(error, ERROR.MISSING_JUMPDEST);
-    return true;
-  } else if (testKey.match(
-    /(^pop1$)/)) {
-    assert.strictEqual(error, ERROR.STACK_UNDERFLOW);
-    return true;
-  }
-
-  return false;
-}
-
-describe('[Common]: vmIOandFlowOperationsTest', function () {
-  // var jump0_foreverOutOfGas = vmIOandFlowOperationsTest.jump0_foreverOutOfGas;
-  // var mloadOutOfGasError2 = vmIOandFlowOperationsTest.mloadOutOfGasError2;
-
-  delete vmIOandFlowOperationsTest.jump0_foreverOutOfGas;
-  delete vmIOandFlowOperationsTest.mloadOutOfGasError2;
-
-  var tests = Object.keys(vmIOandFlowOperationsTest);
+describe('[Common]: vmBitwiseLogicOperationTest', function () {
+  var tests = Object.keys(vmBitwiseLogicOperationTest);
   tests.forEach(function(testKey) {
     var state = new Trie();
-    var testData = vmIOandFlowOperationsTest[testKey];
+    var testData = vmBitwiseLogicOperationTest[testKey];
 
     it(testKey + ' setup the pre', function (done) {
       testUtils.setupPreConditions(state, testData, done);
@@ -57,14 +31,9 @@ describe('[Common]: vmIOandFlowOperationsTest', function () {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
-        if (expectError(testKey, err)) {
-          done();
-          return;
-        }
-
         assert(!err, 'err: ' + err);
         assert.strictEqual(results.gasUsed.toNumber(),
-          testData.exec.gas - testData.gas, 'gas used mismatch');
+          testData.exec.gas - testData.gas);
 
         async.series([
           function(cb) {
@@ -91,6 +60,4 @@ describe('[Common]: vmIOandFlowOperationsTest', function () {
       });
     });
   });
-
-  it('TODO: out of gas error tests');
 });
